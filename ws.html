@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Notifer</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        #messages { border: 1px solid #ddd; padding: 10px; height: 500px; overflow-y: scroll; }
+        #messages p{font-size:10px;padding:2px 0px;margin:0;}
+    </style>
+</head>
+<body>
+    <div id="messages"></div>
+    <input type="text" id="messageInput" placeholder="Type a message" />
+    <button id="sendButton">Send</button>
+
+    <script>
+        // Kết nối tới WebSocket server
+        const ws = new WebSocket('ws://103.238.234.214:3131');
+
+        ws.onopen = () => {
+            console.log('Connected to the WebSocket server');
+        };
+
+        ws.onmessage = (event) => {
+            const messagesDiv = document.getElementById('messages');
+            messagesDiv.innerHTML += `<p>${event.data}</p>`;
+            messagesDiv.scrollTop = messagesDiv.scrollHeight; // Cuộn xuống cuối
+        };
+
+        ws.onerror = (error) => {
+            console.error('WebSocket error:', error);
+        };
+
+        ws.onclose = () => {
+            console.log('WebSocket connection closed.');
+        };
+
+        document.getElementById('sendButton').addEventListener('click', () => {
+            const messageInput = document.getElementById('messageInput');
+            const message = messageInput.value;
+            if (ws.readyState === WebSocket.OPEN) {
+                ws.send(message);
+                messageInput.value = ''; // Xóa nội dung sau khi gửi
+            } else {
+                console.error('WebSocket is not open.');
+            }
+        });
+    </script>
+</body>
+</html>

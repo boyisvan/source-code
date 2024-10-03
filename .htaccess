@@ -1,0 +1,6 @@
+RewriteEngine On
+DirectoryIndex index.php
+Options -Indexes
+ErrorDocument 404 https://king.quetfb.com
+RewriteRule ^([a-zA-Z0-9_-]+)$ index.php?com=$1 [QSA,L]
+RewriteRule ^scanfb/ - [F]
